@@ -7,7 +7,7 @@ from advent import Game, Location, Connection, Object, Animal, Robot, Pet, Playe
 from advent import NORTH, SOUTH, EAST, WEST, UP, DOWN, RIGHT, LEFT, IN, OUT, FORWARD, BACK, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST, NOT_DIRECTION
 
 # comment this line out to skip the devtools for environments like trinket
-import advent_devtools
+# import advent_devtools
 
 # Set up the game you are going to build on.
 # my_game is a top-level container for everything in the game.

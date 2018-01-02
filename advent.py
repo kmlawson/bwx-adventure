@@ -1,4 +1,4 @@
-# 
+#
 # adventure module
 #
 # vim: et sw=2 ts=2 sts=2
@@ -12,7 +12,7 @@ import string
 import textwrap
 import time
 
-# "directions" are all the ways you can describe going some way; 
+# "directions" are all the ways you can describe going some way;
 # they are code-visible names for directions for adventure authors
 direction_names = ["NORTH","SOUTH","EAST","WEST","UP","DOWN","RIGHT","LEFT",
                    "IN","OUT","FORWARD","BACK",
@@ -80,7 +80,7 @@ def define_opposite_dirs (d1, d2):
 opposites = [(NORTH, SOUTH),
              (EAST, WEST),
              (UP, DOWN),
-             (LEFT, RIGHT), 
+             (LEFT, RIGHT),
              (IN, OUT),
              (FORWARD, BACK),
              (NORTHWEST, SOUTHEAST),
@@ -209,6 +209,9 @@ class Base(object):
     self.verbs = {}
     self.phrases = {}
     self.vars = {}
+    self.sentences = {}
+    self.descriptions = {}
+    # key a dictionary of things that can be described, especially useful for locations
 
   def flag(self, f):
     if f in self.vars:
@@ -269,12 +272,12 @@ class Base(object):
 class BaseVerb(Base):
   def __init__(self, function, name):
     Base.__init__(self, name)
-    self.function = function 
+    self.function = function
     self.bound_to = None
-    
+
   def bind_to(self, obj):
     self.bound_to = obj
-    
+
   def act(self, actor, noun, words):
     result = True
     if not self.function(actor, noun, None):
@@ -311,7 +314,7 @@ class Say(BaseVerb):
     self.bound_to.game.output(self.string, FEEDBACK)
     return True
 
-class SayOnNoun(Say):    
+class SayOnNoun(Say):
   def __init__(self, string, noun, name = ""):
     Say.__init__(self, string, name)
     self.noun = noun
@@ -384,7 +387,7 @@ class DevToolsBase(object):
 
   def set_game(self, game):
     self.game = game
-    
+
   def debug_output(self, text, level):
     return
 
@@ -393,11 +396,11 @@ class DevToolsBase(object):
 
 global _devtools
 _devtools = DevToolsBase()
-  
+
 def register_devtools(devtools):
   global _devtools
   _devtools = devtools
-      
+
 # The Game: container for hero, locations, robots, animals etc.
 class Game(Base):
   def __init__(self, name="bwx-adventure"):
@@ -489,7 +492,7 @@ class Game(Base):
     return lambda loc: (s_false, s_true)[flag in (location or loc).vars]
 
   def if_var(self, v, value, s_true, s_false, location = None):
-    return lambda loc: (s_false, s_true)[v in (location or loc).vars and (location or loc).vars[v] == value] 
+    return lambda loc: (s_false, s_true)[v in (location or loc).vars and (location or loc).vars[v] == value]
 
   def output(self, text, message_type = 0):
     if message_type != DEBUG:
@@ -516,11 +519,11 @@ class Game(Base):
     if (message_type == FEEDBACK):
       text = Colors.FG.pink + text + Colors.reset
     if (message_type == TITLE):
-      text = Colors.FG.yellow + Colors.BG.blue + "\n" + text + Colors.reset
+      text = Colors.FG.blue + Colors.BG.cyan + "\n" + text + Colors.reset
     if (message_type == DESCRIPTION):
       text = Colors.reset + text
     if (message_type == CONTENTS):
-      text = Colors.FG.green + text + Colors.reset
+      text = Colors.FG.blue + text + Colors.reset
     if (message_type == DEBUG):
       text = Colors.bold + Colors.FG.black + Colors.BG.orange + "\n" + text + Colors.reset
     return text
@@ -578,7 +581,7 @@ class Game(Base):
     if recording_name != None:
       self.devtools.debug_output("recording_name: " + recording_name, 3)
       actor.act_start_recording(actor, recording_name, None)
-          
+
   def run_room(self):
     actor = self.current_actor
     if actor == self.player or actor.flag('verbose'):
@@ -636,9 +639,10 @@ class Game(Base):
        command = user_input
 
     self.current_actor = actor
-                
+
     # now we're done with punctuation and other superfluous words like articles
-    command = normalize_input(command)
+    if not command[0:3]=='say': # don't remove articles if it is the say command
+        command = normalize_input(command)
 
     # see if we want to quit
     if command == 'q' or command == 'quit':
@@ -671,7 +675,7 @@ class Game(Base):
     for c in actor.location.contents.values():
         if isinstance(c, Container) and c.is_open:
           things += c.contents.values()
-      
+
     potential_verbs = []
     for t in things:
       potential_verbs += t.verbs.keys()
@@ -816,21 +820,20 @@ class Consumable(Object):
     verb.bind_to(self)
     self.consume_term = "consume"
     self.replacement = replacement
-    
+
   def consume(self, actor, noun, words):
     if not actor.location.replace_object(actor, self.name, self.replacement):
       return False
-    
     self.output("%s %s%s %s." % (actor.name.capitalize(), self.consume_term,
-                                 actor.verborverbs, self.description))
+                                actor.verborverbs, self.description))
     self.verb.act(actor, noun, words)
     return True
-    
+
 class Food(Consumable):
   def __init__(self, name, desc, verb, replacement = None):
     Consumable.__init__(self, name, desc, verb, replacement)
     self.consume_term = "eat"
-    
+
 class Drink(Consumable):
   def __init__(self, name, desc, verb, replacement = None):
     Consumable.__init__(self, name, desc, verb, replacement)
@@ -840,11 +843,11 @@ class Lockable(Base):
   def __init__(self, name):
     Base.__init__(self, name)
     self.requirements = {}
-  
+
   def make_requirement(self, thing):
     self.requirements[thing.name] = thing
     self.lock()
-      
+
   def lock(self):
     self.set_flag('locked')
 
@@ -853,7 +856,7 @@ class Lockable(Base):
 
   def is_locked(self):
     return self.flag('locked')
-    
+
   def try_unlock(self, actor):
     # first see if the actor is whitelisted
     if isinstance(self, Location) and actor.allowed_locs:
@@ -863,7 +866,7 @@ class Lockable(Base):
     # now check if we're locked
     if not self.flag('locked'):
       return True
-    
+
     # check if there are any implicit requirements for this object
     if len(self.requirements) == 0:
       self.output("It's locked!")
@@ -914,12 +917,12 @@ class Container(Lockable):
       # it's open so describe the contents
       desc += self.describe_contents()
     return desc
-    
+
   def describe_contents(self):
     desc = ""
     if not self.contents:
       return desc
-    
+
     # try to make a readable list of the things
     contents_description = proper_list_from_dict(self.contents)
     # is it just one thing?
@@ -948,7 +951,7 @@ class Container(Lockable):
   def is_open(self):
     return not self.flag('closed')
 
-        
+
 # A "location" is a place in the game.
 class Location(Lockable):
   # name: short name of this location
@@ -958,7 +961,7 @@ class Location(Lockable):
   # first_time: is it the first time here?
   # actors: other actors in the location
 
-  def __init__(self, name, description, inonat="in"):
+  def __init__(self, name, description, sentences, inonat="in"):
     Lockable.__init__(self, name)
     self.description = description
     self.inonat = inonat
@@ -1019,7 +1022,7 @@ class Location(Lockable):
         c = self.contents[k]
         if isinstance(c, Container) and c.is_open():
           desc += c.describe_contents()
-                                     
+
     if self.actors:
       for k in sorted(self.actors.keys()):
         a = self.actors[k]
@@ -1057,21 +1060,21 @@ class Location(Lockable):
     if new_obj:
       d[new_obj.name] = new_obj
     return old_obj
-    
+
   def add_exit(self, con, way):
     self.exits[ way ] = con
 
   def go(self, actor, way):
     if not way in self.exits:
       return None
-    
+
     c = self.exits[ way ]
 
     # first check if the connection is locked
     if not c.try_unlock(actor):
       return None
 
-    # check if the room on the other side is locked        
+    # check if the room on the other side is locked
     if not c.point_b.try_unlock(actor):
       return None
 
@@ -1141,7 +1144,7 @@ class Actor(Base):
   # terminate
   def terminate(self):
     self.health = -1
-    
+
   # describe ourselves
   def describe(self, observer):
     return self.name
@@ -1168,7 +1171,7 @@ class Actor(Base):
   # remove something from our inventory
   def remove_from_inventory(self, thing):
     return self.inventory.pop(thing.name, None)
-    
+
   # set up a trade
   def add_trade(self, received_obj, returned_obj, verb):
     verb.bind_to(self)
@@ -1203,7 +1206,7 @@ class Actor(Base):
     receiver.receive_item(actor, thing)
     del d[thing.name]
     return True
-      
+
   # move a thing from the current location to our inventory
   def act_take1(self, actor, noun, words):
     if not noun:
@@ -1212,7 +1215,7 @@ class Actor(Base):
     if not t:
       for c in self.location.contents.values():
         if isinstance(c, Container) and c.is_open:
-          t = c.contents.pop(noun, None)      
+          t = c.contents.pop(noun, None)
     if t:
       self.inventory[noun] = t
       self.output("%s take%s the %s." % (actor.cap_name,
@@ -1236,10 +1239,14 @@ class Actor(Base):
       return False
 
   def act_look(self, actor, noun, words):
-    self.output(self.location.describe(actor, True))
+    if not noun: # they are just looking around
+        self.output(self.location.describe(actor, True))
+    else: # they are looking at something in particular
+        self.act_examine1(actor,noun,words)
     return True
 
   # examine a thing in our inventory or location
+  # KML: Modified this so that if no objects are found, it looks for descriptions in the location
   def act_examine1(self, actor, noun, words):
     if not noun:
       return False
@@ -1253,7 +1260,12 @@ class Actor(Base):
         if noun in c.contents:
           n = c.contents[noun]
     if not n:
-      return False
+      # There is no such inventory or location object so now check descriptions:
+      if not noun in self.location.descriptions:
+          self.output('You don\'t see a "' + noun + '"',FEEDBACK)
+          return True
+      self.output(self.location.descriptions[noun],DESCRIPTION)
+      return True
     self.output("You see " + n.describe(self) + ".")
     return True
 
@@ -1294,7 +1306,6 @@ class Actor(Base):
     if not d:
       return False
     t = d[noun]
-    
     if isinstance(t, Food):
       t.consume(actor, noun, words)
     else:
@@ -1308,7 +1319,7 @@ class Actor(Base):
     if not d:
       return False
     t = d[noun]
-    
+
     if isinstance(t, Drink):
       t.consume(actor, noun, words)
     else:
@@ -1322,7 +1333,7 @@ class Actor(Base):
       return False
     if not noun in actor.location.contents:
       return False
-    
+
     t = self.location.contents[noun]
     if isinstance(t, Container):
       t.open(actor)
@@ -1358,7 +1369,7 @@ class Actor(Base):
 
   def set_next_script_response(self, response):
     return True
-  
+
 # Scripts are sequences of instructions for Robots to execute
 class Script(Base):
   def __init__(self, name, lines=None, game=None):
@@ -1392,7 +1403,7 @@ class Script(Base):
       # if we didn't manage to get "end" go ahead and stop things brute force
       if self.recording:
         self.stop_recording()
-    
+
   def start_recording(self):
     assert not self.running
     assert not self.recording
@@ -1448,14 +1459,14 @@ class Script(Base):
 
     if not self.commands:
       return None
-      
+
     while True:
       line = self.commands[self.current_command].strip()
       self.current_command += 1
       # support comments and/or blank lines within the script
       line = line.split("#")[0]
       if line != "":
-        break 
+        break
     if line == "end":
       self.stop_running()
       return None
@@ -1475,12 +1486,12 @@ class Script(Base):
                                                    response,
                                                    expected_response),
         level)
-      
-  
+
+
   def set_next_command(self, command):
     if not self.recording:
       return True
-    
+
     # save the accumulated response from the previous command
     if self.current_response != None:
       # append the response, trimming the final newline that preceded this command
@@ -1493,7 +1504,7 @@ class Script(Base):
       self.stop_recording()
       return False
     self.current_command += 1
-      
+
     return True
 
   def set_next_response(self, response):
@@ -1509,7 +1520,7 @@ class Script(Base):
           continue
         self.current_response += c
       self.current_response += "\n"
-      
+
   def print_script(self):
     i = 0
     for command in self.commands:
@@ -1613,7 +1624,7 @@ class Robot(Actor):
                                                             script_name)
 
       return True;
-    
+
     self.game.devtools.debug_output("start running %s" % script_name, 2)
     script = self.scripts[script_name]
     self.current_script = script
@@ -1627,7 +1638,7 @@ class Robot(Actor):
       self.game.devtools.debug_output("start checking", 2)
       return True
     return False
-  
+
   def act_print_script(self, actor, noun, words):
     script_name = self.parse_script_name(noun)
     if not script_name in self.scripts:
@@ -1667,8 +1678,8 @@ class Robot(Actor):
 
   def add_script(self, script):
     script.game = self.game
-    self.scripts[script.name] = script    
-  
+    self.scripts[script.name] = script
+
   def set_think_time(self, actor, noun, words):
     if noun:
       t = float(noun)
@@ -1726,7 +1737,7 @@ class Animal(Actor):
   def __init__(self, name):
     #super(Animal, self).__init__(name )
     Actor.__init__(self, name)
-    
+
   def act_autonomously(self, observer_loc):
     self.random_move(observer_loc)
 
@@ -1949,5 +1960,3 @@ class Share(object):
 
   def zdelete(self, domain, key, value):
     return self._do(domain, "ZREM", key, value)
-
-
