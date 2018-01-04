@@ -151,7 +151,7 @@ articles = ['a', 'an', 'the']
 prepositions = ['aboard', 'about', 'above', 'across', 'after', 'against', 'along'
     'among', 'around', 'at', 'atop', 'before', 'behind', 'below', 'beneath',
     'beside', 'besides', 'between', 'beyond', 'by', 'for', 'from', 'in', 'including'
-    'inside', 'into', 'on', 'onto', 'outside', 'over', 'past', 'than' 'through', 'to',
+    'inside', 'into', 'on', 'onto', 'outside', 'over', 'past', 'than' 'through',
     'toward', 'under', 'underneath',  'onto', 'upon', 'with', 'within']
 
 
@@ -296,6 +296,15 @@ class Die(BaseVerb):
   def __init__(self, string, name = ""):
     BaseVerb.__init__(self, None, name)
     self.string = string
+
+  def act(self, actor, noun, words):
+    self.bound_to.game.output("%s %s %s" % (actor.name.capitalize(),
+                                            actor.isare, self.string), FEEDBACK)
+    self.bound_to.game.output("%s %s dead." % (actor.name.capitalize(),
+                                               actor.isare), FEEDBACK)
+    actor.terminate()
+    return True
+
 
   def act(self, actor, noun, words):
     self.bound_to.game.output("%s %s %s" % (actor.name.capitalize(),
@@ -791,6 +800,9 @@ class Game(Base):
       self.run_room()
       if self.player.health < 0:
         self.output ("Better luck next time!")
+        break
+      if self.player.flag('win'):
+        self.output ("Congratulations on completing the game!")
         break
       if not self.run_step():
         break
