@@ -597,7 +597,7 @@ class Game(Base):
       # if the actor moved, describe the room
       if actor.check_if_moved():
         self.output(actor.location.title(actor), TITLE)
-
+        time.sleep(0.07)
         # cache this as we need to know it for the query to entering_location()
         self.fresh_location = actor.location.first_time
 
@@ -611,7 +611,9 @@ class Game(Base):
     for animal in self.animals.values():
       # first check that it is not dead
       if animal.health >= 0:
+        animal.random_say(actor.location)
         animal.act_autonomously(actor.location)
+
 
 
   def run_step(self, cmd = None):
@@ -799,14 +801,14 @@ class Game(Base):
           return
       self.run_room()
       if self.player.health < 0:
-        self.output ("Better luck next time!")
+        self.output ("You have perished! Better luck next time!")
         break
       if self.player.flag('win'):
         self.output ("Congratulations on completing the game!")
         break
       if not self.run_step():
         break
-    self.output("\ngoodbye!\n", FEEDBACK)
+    self.output("\nGoodbye! Try again soon!\n", FEEDBACK)
 
 
 class Object(Base):
@@ -1135,6 +1137,10 @@ class Actor(Base):
     self.isare = "is"
     self.verborverbs = "s"
     self.trades = {}
+    self.randomphrases = []
+    self.talkativeness = 0.6 # percentage chance an actor will say a random phrase
+    # default verbs to randomly use when an actor says something:
+    self.sayverbs = ['says','mumbles','mumbles','mumbles','muses','says','speaks, as if to no one']
     # associate each of the known actions with functions
     self.add_verb(BaseVerb(self.act_take1, 'take'))
     self.add_verb(BaseVerb(self.act_take1, 'get'))
@@ -1749,6 +1755,15 @@ class Animal(Actor):
   def __init__(self, name):
     #super(Animal, self).__init__(name )
     Actor.__init__(self, name)
+
+  # Allows an actor to speak a phrase randomly from a list of statements
+  def random_say(self,observer_loc):
+      if self.location == observer_loc: # Only say something if in same room as player
+        if len(self.randomphrases)<1: return
+        if random.random() < self.talkativeness:
+            self.game.output('The '+self.name+' '+random.choice(self.sayverbs)+', "'+random.choice(self.randomphrases)+'"',FEEDBACK)
+            return
+
 
   def act_autonomously(self, observer_loc):
     self.random_move(observer_loc)
