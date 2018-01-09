@@ -1761,6 +1761,8 @@ class Animal(Actor):
       if self.location == observer_loc: # Only say something if in same room as player
         if len(self.randomphrases)<1: return
         if random.random() < self.talkativeness:
+            self.game.output("")
+            time.sleep(0.1)
             self.game.output('The '+self.name+' '+random.choice(self.sayverbs)+', "'+random.choice(self.randomphrases)+'"',FEEDBACK)
             return
 
