@@ -436,7 +436,7 @@ It is precisely in these empty spaces,
 that we find the usefulness of the room.
 Therefore, we regard having something as beneficial;
 But having nothing as useful. ch 11 (k)"
-"""}
+""",'ground':"Nothing of interest here."}
 laozisix.add_phrase("read sign",read_sign)
 
 # ######################################################
@@ -448,7 +448,7 @@ confuciusone = game.new_location(
 """You find yourself in a pleasant three sided courtyard. An open main gate
 leads south towards another courtyard and building. There is a door to a house
 to the north and another door into a building on the west. There is also a 
-door to the east. There is a sign here and a rock with a carving on it. 
+door to the east. There is a sign here and a stone with a carving on it. 
 """, "in")
 confuciusone.descriptions = {'sign':"""
 The sign says:
@@ -458,10 +458,11 @@ Goodness 1.1 (a)"
 'carving':"""The carving reads:
 "The Master said When you see someone who is worthy, concentrate upon 
 becoming their equal; when you see someone who is unworthy, use this as an 
-opportunity to look within yourself. 4.17"
+opportunity to look within yourself. 4.17 (r)"
 """}
 confuciusone.add_phrase("read sign",read_sign)
 confuciusone.add_phrase("read carving",read_carving)
+confuciusone.add_phrase("look stone",read_carving)
 
 # ######################################################
 # ## Location: Kongzi 2 Library
@@ -473,7 +474,7 @@ confuciustwo = game.new_location(
 "Hall of Kongzi - Library",
 """You find yourself what must be the library. The place is divided into sections
 corresponding to the medium the works are preserved in. In one section there
-are a pile of upper ox legs, or the scapula, in roughly a triangular shape.
+are a pile of upper ox leg bones, or the scapula, in roughly a triangular shape.
 There are also a pile of pieces of the bottom bellies of turtles, plastrons. Both
 of these have carved letters on them, but with many more rounded shapes than
 the characters you have seen on the scrolls, stone carvings, and signs 
@@ -486,10 +487,13 @@ rolls of paper, and it looks like the pages are pasted together end to end in
 a way that makes them look like a rolled up scroll. Finally there is a section
 with more familiar looking paper books: pieces of folded paper stitched 
 together with a silk cord. Some of these are on their own, others in boxes
-collecting a few of them together. The librarian is here, dusting off things
-and organising the messy collection of bones and turtle belly texts. You see
-an open door to a courtyard to the east, an archway to the west, and a door to 
-the north.
+collecting a few of them together. 
+
+The librarian is here, dusting off things and organising the messy collection of 
+bones and turtle belly texts. You see an open door to a courtyard to the east, 
+an archway to the west, and a door to the north. 
+
+There is a sign here, and also a scroll hanging here.
 """, "in")
 confuciustwo.add_phrase("read sign",read_sign)
 confuciustwo.add_phrase("read scroll",read_scroll)
@@ -497,9 +501,17 @@ confuciustwo.add_phrase("talk librarian",Say("The librarian gives you smile but 
 confuciustwo.descriptions = {'sign':"""
 The sign says:
 "The Master said I am not someone who was born with knowledge. I simply 
-love antiquity, and diligently look there for knowledge."
+love antiquity, and diligently look there for knowledge. (z)" 
 """,
 'librarian':"""The librarian looks very busy, there is no end to her work.""",
+'plastrons':"These are written in a very cold script that you struggle to read.", 
+'plastron':"These are written in a very cold script that you struggle to read.",
+'bones':"These are written in a very cold script that you struggle to read.",
+'paper':"The librarian tells you that the library is not open today so leave them alone.",
+'rolls':"The librarian tells you that the library is not open today so leave them alone.",
+'silk':"The librarian tells you that the library is not open today so leave them alone.",
+'slips':"The librarian tells you that the library is not open today so leave them alone.",
+'bamboo slips':"The librarian tells you that the library is not open today so leave them alone.",
 'scroll':"""The scroll reads:
 "The Master said, 'Learn as if you will never catch up, and as if you 
 feared losing what you have already attained.' 8.17 (n)"
@@ -594,6 +606,7 @@ with him from beginning until end until we finally got to the bottom of it.
 """}
 confuciusfive.add_phrase("read sign",read_sign)
 confuciusfive.add_phrase("read carving",read_carving)
+confuciusfive.add_phrase("look stone",read_carving)
 
 # ######################################################
 # ## Location: Kongzi 6 Study
@@ -678,6 +691,7 @@ confuciusseven.add_phrase("pick goose feathers",pick_berries)
 confuciusseven.add_phrase("pick goose feather",pick_berries)
 confuciusseven.add_phrase("pick feather",pick_berries)
 confuciusseven.add_phrase("read carving",read_carving)
+confuciusseven.add_phrase("look rock",read_carving)
 
 # ######################################################
 # ## Location: Kongzi 8 Exam Room
@@ -721,7 +735,8 @@ confuciusnine = game.new_location(
 """This large hall contains a group of students sitting on the floor. The 
 students appear to be reciting some old text together to practice it. The 
 teacher at the front is listening attentively and occasionally stops them to 
-comment on the meaning of a phrase and reflect on principals.
+comment on the meaning of a phrase and reflect on principals. There is a sign
+here and a scroll hanging on the wall.
 """, "in")
 confuciusnine.descriptions = {'sign':"""
 The sign says:
@@ -768,10 +783,11 @@ learning will result in the vice of willfulness. 17.8 (l)"
 "Fan Chi asked about Goodness
 The Master replied 'Care for others'
 He then asked about wisdom.
-The Master replied, 'Know others.'"
+The Master replied, 'Know others.' (y)"
 """}
 confuciusten.add_phrase("read sign",read_sign)
 confuciusten.add_phrase("read carving",read_carving)
+confuciusten.add_phrase("look rock",read_carving)
 
 
 # ######################################################
@@ -796,6 +812,7 @@ weed the fields of others. They demand much of others, while putting little
 responsibility on themselves. 7B32.1 (t)"
 """,'sticker':"I went to Qi to reform the king, but all I was left with was this stupid sticker."}
 menciusone.add_phrase("read carving",read_carving)
+menciusone.add_phrase("look rock",read_carving)
 
 # ######################################################
 # ## Location: Mengzi 2 Workshop
@@ -888,6 +905,7 @@ unevenness in the rain and in human effort... 6A7.1 (j)"
 """}
 menciusthree.add_phrase("read sign",read_sign)
 menciusthree.add_phrase("read carving",read_carving)
+menciusthree.add_phrase("look rock",read_carving)
 menciusthree.add_phrase("fix cart",fix_cart)
 menciusthree.add_phrase("fix wheel",fix_cart)
 menciusthree.add_phrase("fix cart wheel",fix_cart)
@@ -1046,6 +1064,7 @@ will be times when he perseveres, they will be few. 7B35.1 (v)"
 """}
 menciuseight.add_phrase("read sign",read_sign)
 menciuseight.add_phrase("read carving",read_carving)
+menciuseight.add_phrase("look rock",read_carving)
 
 
 # ######################################################
@@ -1140,7 +1159,7 @@ zhuangzithree = game.new_location(
 high above you as it sways in the wind but also the creaking and crackling
 of the bamboo stalks as they bend. There is an occasional hoot or scream
 coming from a large number of monkeys that you can just make out far above
-you.
+you. You see a sign here and also a rock with a carving on it.
 """, "in")
 zhuangzithree.descriptions = {'sign':"""The sign says: 
 "What is this thing known as Three in the Morning? A monkey trainer was 
@@ -1151,7 +1170,7 @@ delighted. This change of description and arrangement caused no loss, but
 in one case it brought anger and in another delight. He just went by the 
 rightness of their present 'this.' Thus, the Sage uses various rights and 
 wrongs to harmonize with others and yet remains at rest in the middle of 
-Heaven the Potter's Wheel. This is called 'Walking Two Roads'"
+Heaven the Potter's Wheel. This is called 'Walking Two Roads' (u)"
 """,
 'carving':"""The carving reads:
 "Do you know what it is that undermines real Virtuosity, and for what 
@@ -1163,6 +1182,8 @@ inauspicious implements, not the kind of thing that can be used to perfect
 your own behavior. 4.3 (s)"
 """}
 zhuangzithree.add_phrase("read sign",read_sign)
+zhuangzithree.add_phrase("read carving",read_carving)
+zhuangzithree.add_phrase("look rock",read_carving)
 
 
 # ######################################################
@@ -1233,7 +1254,7 @@ is nothing more effective than letting go of the world. When you let go of
 the world, you are free of entanglements. Free of entanglements, you are 
 balanced and untilting. Balanced and untilting, you are unborn along with 
 each presence that confronts you. With such rebirth, you have done about 
-all that can be done."
+all that can be done. (d)"
 """,
 'well':"""The well is quite small but looks very deep. You can just make out 
 something moving at the bottom. The well is so small the huge turtle wouldn't be 
@@ -1246,7 +1267,7 @@ may be short but lengthening it would surely vex him; the swan's neck may
 be long, but cutting it short would surely sorrow here. What is long in its 
 inborn nature is not to be cut short, and what is short in its inborn 
 nature is not to be lengthened. For there is nothing there that needs to be 
-excised or worried over."
+excised or worried over. (i)"
 """}
 zhuangzifour.add_phrase("read sign",read_sign)
 zhuangzifour.add_phrase("read scroll",read_scroll)
@@ -1326,7 +1347,8 @@ zhuangziseven = game.new_location(
 "Hall of Zhuangzi - Waterfalls ",
 """You are standing in front of a beautiful waterfall. In front of the waterfall
 you can see thousands of butterflies flapping about and visiting the many flowers
-that grow along the edge of the water here.
+that grow along the edge of the water here. You see a sign here and a stone with 
+a carving on it.
 """, "in")
 zhuangziseven.descriptions = {'sign':"""The sign says: 
 "Once Zhuang Zhou dreamt he was a butterfly, fluttering about joyfully just 
@@ -1346,6 +1368,8 @@ really gets all the way through them that can see how the two sides open
 into each other to form a oneness. 2.22 (v)"
 """}
 zhuangziseven.add_phrase("read sign",read_sign)
+zhuangziseven.add_phrase("look stone",read_carving)
+zhuangziseven.add_phrase("read carving",read_carving)
 zhuangziseven.add_phrase('swim',Say("You take a refreshing swim in front of the waterfall and enjoy the spray that comes off it."))
 
 # ######################################################
@@ -1398,7 +1422,9 @@ think I could have grown to be so great? 4.18 (g)"
 """}
 zhuangzieight.add_phrase("read sign",read_sign)
 zhuangzieight.add_phrase("read carving",read_carving)
+zhuangzieight.add_phrase("look stone",read_carving)
 zhuangzieight.add_phrase("take nap",Say("You take a relaxing nap in the shade of the big tree."))
+zhuangzieight.add_phrase("nap",Say("You take a relaxing nap in the shade of the big tree."))
 zhuangzieight.add_phrase("take a nap",Say("You take a relaxing nap in the shade of the big tree."))
 
 

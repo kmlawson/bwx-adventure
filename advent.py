@@ -5,11 +5,11 @@
 
 # for Python3, use:
 # import urllib.request as urllib2
-import urllib2
+# import urllib2
 
 import random
 import string
-import textwrap
+# import textwrap
 import time
 
 # "directions" are all the ways you can describe going some way;

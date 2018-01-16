@@ -106,7 +106,7 @@ sidewalk.add_verb(Verb(scream, 'scream'))
 
 def throw(self, actor, noun, words):
   if noun and actor.get_verb('drop').act(actor, noun, words):
-     print 'The %s bounces and falls to the floor' % noun
+         print 'The %s bounces and falls to the floor' % noun
      return True
   else:
      print 'You hurt your arm.'
