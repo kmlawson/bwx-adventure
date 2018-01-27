@@ -2056,7 +2056,7 @@ laozi.set_allowed_locations([laozione,laozitwo,laozithree,laozifour,laozifive,la
 # Actor - Mengzi
 # #####################################
 
-mengzi = Animal("Zhuangzi")
+mengzi = Animal("Mengzi")
 mengzi.description = """Looks like a man dressed in Ying style robes. He has a plaster on his nose."""
 mengzi.talkativeness = 0.6
 mengzi.add_phrase("look at man",Say(mengzi.description))
